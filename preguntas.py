@@ -12,8 +12,14 @@ Utilice el archivo `data.csv` para resolver las preguntas.
 
 """
 
+with open('data.csv', encoding='utf-8') as file:
+    content = file.readlines()
+
+data = [line.replace('\n', '') for line in content]
+data = [line.split('\t') for line in content]
 
 def pregunta_01():
+
     """
     Retorne la suma de la segunda columna.
 
@@ -21,10 +27,14 @@ def pregunta_01():
     214
 
     """
-    return
+
+    second_column: list = [int(line[1]) for line in data]
+    sum_column: int = sum(second_column)
+    return sum_column
 
 
 def pregunta_02():
+
     """
     Retorne la cantidad de registros por cada letra de la primera columna como la lista
     de tuplas (letra, cantidad), ordendas alfabéticamente.
@@ -39,10 +49,22 @@ def pregunta_02():
     ]
 
     """
-    return
+    sequence: dict = {}
+    first_column: list = [line[0] for line in data]
+    for letter in first_column:
+        if letter in sequence:
+            sequence[letter] += 1
+        else:
+            sequence[letter] = 1
+
+    new_sequence: list = [(key, value) for key, value in sequence.items()]    
+    new_sequence: list = sorted(new_sequence, reverse=False)
+
+    return new_sequence    
 
 
 def pregunta_03():
+    
     """
     Retorne la suma de la columna 2 por cada letra de la primera columna como una lista
     de tuplas (letra, suma) ordendas alfabeticamente.
@@ -57,10 +79,20 @@ def pregunta_03():
     ]
 
     """
-    return
+    sequence = {}
+    for line in data:
+        first_column = line[0]
+        second_column = int(line[1])
+        sequence[first_column] = sequence.get(first_column, 0) + second_column
+
+    new_sequence = [(key,value) for key, value in sequence.items()]
+    new_sequence = sorted(new_sequence, reverse=False)
+    
+    return new_sequence   
 
 
 def pregunta_04():
+
     """
     La columna 3 contiene una fecha en formato `YYYY-MM-DD`. Retorne la cantidad de
     registros por cada mes, tal como se muestra a continuación.
@@ -82,10 +114,23 @@ def pregunta_04():
     ]
 
     """
-    return
+    sequence = {}
+    date: list = [line[2].split('-') for line in data]
+    number_month: list = [month[1] for month in date]
+    for month in number_month:
+        if month in sequence:
+            sequence[month] +=1
+        else:
+            sequence[month] = 1
+
+    new_sequence: list = [(key, value) for key, value in sequence.items()]
+    new_sequence: list = sorted(new_sequence, reverse=False)
+
+    return new_sequence    
 
 
 def pregunta_05():
+    
     """
     Retorne una lista de tuplas con el valor maximo y minimo de la columna 2 por cada
     letra de la columa 1.
@@ -100,10 +145,24 @@ def pregunta_05():
     ]
 
     """
-    return
+    sequence: dict = {}
+    first_column: list = [line[0] for line in data]
+    second_column: list = [int(line[1]) for line in data]
+
+    for letter, number in zip(first_column, second_column):
+        if letter in sequence:
+            sequence[letter].append(number)
+        else:
+            sequence[letter] = [number]
+
+    new_sequence: list = [(key, max(value), min(value)) for key, value in sequence.items()]
+    new_sequence: list = sorted(new_sequence, reverse=False)
+
+    return new_sequence   
 
 
 def pregunta_06():
+    
     """
     La columna 5 codifica un diccionario donde cada cadena de tres letras corresponde a
     una clave y el valor despues del caracter `:` corresponde al valor asociado a la
@@ -125,10 +184,28 @@ def pregunta_06():
     ]
 
     """
-    return
+    sequence = {}
+    fifth_column = [line[4].split(',') for line in data]
+    
+    for row in fifth_column:
+        for element in row:
+            element = element.split(':')
+            key = element[0]
+            value = int(element[1])
+    
+            if key in sequence:
+                sequence[key].append(value)
+            else:
+                sequence[key] = [value]
+    
+    new_sequence: list = [(key, min(value), max(value)) for key, value in sequence.items()]
+    new_sequence: list = sorted(new_sequence, reverse=False)
+    
+    return new_sequence    
 
 
 def pregunta_07():
+    
     """
     Retorne una lista de tuplas que asocien las columnas 0 y 1. Cada tupla contiene un
     valor posible de la columna 2 y una lista con todas las letras asociadas (columna 1)
@@ -149,10 +226,23 @@ def pregunta_07():
     ]
 
     """
-    return
+    sequence: dict = {}
+    first_column: list = [line[0] for line in data]
+    second_column: list = [int(line[1]) for line in data]
+    for letter, number in zip(first_column, second_column):
+        if number in sequence:
+            sequence[number].append(letter)
+        else:
+            sequence[number] = [letter]
+
+    new_sequence = [(key, value) for key, value in sequence.items()]
+    new_sequence = sorted(new_sequence, reverse=False)
+
+    return new_sequence   
 
 
 def pregunta_08():
+    
     """
     Genere una lista de tuplas, donde el primer elemento de cada tupla contiene  el valor
     de la segunda columna; la segunda parte de la tupla es una lista con las letras
@@ -174,10 +264,22 @@ def pregunta_08():
     ]
 
     """
-    return
+    sequence: dict = {}
+    first_column: list = [line[0] for line in data]
+    second_column: list = [int(line[1]) for line in data]
+    for letter, number in zip(first_column, second_column):
+        if number in sequence:
+            sequence[number].append(letter)
+        else:
+            sequence[number] = [letter]
 
+    new_sequence = [(key, sorted(list(set(value)))) for key, value in sequence.items()]
+    new_sequence = sorted(new_sequence, reverse=False)
+
+    return new_sequence
 
 def pregunta_09():
+    
     """
     Retorne un diccionario que contenga la cantidad de registros en que aparece cada
     clave de la columna 5.
@@ -197,10 +299,25 @@ def pregunta_09():
     }
 
     """
-    return
+    sequence: dict = {}
+    fifth_column: list = [line[4].split(',') for line in data]
 
+    for row in fifth_column:
+        for element in row:
+            element = element.split(':')
+            key = element[0]
+
+            if key in sequence:
+                sequence[key] += 1
+            else:
+                sequence[key] = 1
+
+    new_sequence: dict = dict(sorted(sequence.items()))
+
+    return new_sequence
 
 def pregunta_10():
+
     """
     Retorne una lista de tuplas contengan por cada tupla, la letra de la columna 1 y la
     cantidad de elementos de las columnas 4 y 5.
@@ -218,10 +335,16 @@ def pregunta_10():
 
 
     """
-    return
+    first_column: list = [line[0] for line in data]
+    fourth_column: list = [line[3].split(',') for line in data]
+    fifth_column: list = [line[4].split(',') for line in data]
+    sequence: list = [(col1, len(col4), len(col5)) for col1, col4, col5 in zip(first_column, fourth_column, fifth_column)]
+
+    return sequence
 
 
 def pregunta_11():
+
     """
     Retorne un diccionario que contengan la suma de la columna 2 para cada letra de la
     columna 4, ordenadas alfabeticamente.
@@ -239,10 +362,24 @@ def pregunta_11():
 
 
     """
-    return
+
+    sequence = {}
+    fourth_column: list = [line[3].split(',') for line in data]
+    second_column: list = [int(line[1]) for line in data]
+    for letter_list, number in zip(fourth_column, second_column):
+        for letter in letter_list:
+            if letter in sequence:
+                sequence[letter] += number
+            else:
+                sequence[letter] = number
+
+    new_sequence = dict(sorted(sequence.items()))
+
+    return new_sequence
 
 
 def pregunta_12():
+
     """
     Genere un diccionario que contengan como clave la columna 1 y como valor la suma de
     los valores de la columna 5 sobre todo el archivo.
@@ -256,5 +393,20 @@ def pregunta_12():
         'E': 324
     }
 
+
     """
-    return
+    sequence: dict = {}
+    first_column: list = [line[0] for line in data]
+    fifth_column: list = [line[4].split(',') for line in data]
+    for col1, col5 in zip(first_column, fifth_column):
+        for element in col5:
+            element = element.split(':')
+            key, value = [element[0], int(element[1])]
+            if col1 in sequence:
+                sequence[col1] += value
+            else:
+                sequence[col1] = value
+
+    new_sequence: list = dict(sorted(sequence.items()))
+
+    return new_sequence
